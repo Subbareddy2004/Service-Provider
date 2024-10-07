@@ -10,7 +10,7 @@ function FoodItems() {
   useEffect(() => {
     async function fetchFoodItems() {
       try {
-        const foodItemsCollection = collection(db, 'fs_food_items');
+        const foodItemsCollection = collection(db, 'fs_food_items1');
         const foodItemsSnapshot = await getDocs(foodItemsCollection);
         const foodItemsList = foodItemsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setFoodItems(foodItemsList);
