@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { FaBars } from 'react-icons/fa';
 
-function Header() {
+function Header({ onMenuClick }) {
   const { currentUser, logout } = useAuth();
 
   async function handleLogout() {
@@ -14,22 +15,25 @@ function Header() {
   }
 
   return (
-    <header className="bg-blue-500 text-white shadow-md">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Food Service Admin</h1>
-        {/* <nav className="hidden md:block">
-          <ul className="flex space-x-4">
-            <li><Link to="/" className="hover:text-blue-200">Dashboard</Link></li>
-            <li><Link to="/orders" className="hover:text-blue-200">Orders</Link></li>
-            <li><Link to="/food-items" className="hover:text-blue-200">Food Items</Link></li>
-            <li><Link to="/subscriptions" className="hover:text-blue-200">Subscriptions</Link></li>
-            <li><Link to="/users" className="hover:text-blue-200">Users</Link></li>
-          </ul>
-        </nav> */}
+    <header className="bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-lg">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="flex items-center">
+          <button onClick={onMenuClick} className="mr-4 md:hidden text-gray-300 hover:text-white focus:outline-none focus:text-white">
+            <FaBars size={24} />
+          </button>
+          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500">
+            Food Service Admin
+          </h1>
+        </div>
         {currentUser && (
           <div className="flex items-center space-x-4">
-            <span className="hidden md:inline">Logged in as: {currentUser.email}</span>
-            <button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Log Out</button>
+            <span className="hidden md:inline text-gray-300">Logged in as: {currentUser.email}</span>
+            <button 
+              onClick={handleLogout} 
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+            >
+              Log Out
+            </button>
           </div>
         )}
       </div>

@@ -165,19 +165,18 @@ function Dashboard() {
   }
 
   const chartColors = {
-    orange: '#FFA500',
-    purple: '#800080',
-    teal: '#008080',
-    blue: '#0000FF'
+    primary: '#4F46E5',
+    secondary: '#10B981',
+    tertiary: '#F59E0B',
+    quaternary: '#EF4444',
+    quinary: '#8B5CF6'
   };
 
   const categoryChartData = {
     labels: Object.keys(categoryDistribution),
     datasets: [{
       data: Object.values(categoryDistribution),
-      backgroundColor: [
-        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-      ],
+      backgroundColor: Object.values(chartColors),
     }],
   };
 
@@ -185,7 +184,7 @@ function Dashboard() {
     labels: topCustomerAreas.map(item => item.area),
     datasets: [{
       data: topCustomerAreas.map(item => item.count),
-      backgroundColor: chartColors.orange,
+      backgroundColor: chartColors.primary,
     }],
   };
 
@@ -193,7 +192,7 @@ function Dashboard() {
     labels: peakOrderHours.map(item => item.hour),
     datasets: [{
       data: peakOrderHours.map(item => item.count),
-      backgroundColor: chartColors.purple,
+      backgroundColor: chartColors.secondary,
     }],
   };
 
@@ -201,7 +200,7 @@ function Dashboard() {
     labels: Object.keys(priceRangeDistribution),
     datasets: [{
       data: Object.values(priceRangeDistribution),
-      backgroundColor: chartColors.teal,
+      backgroundColor: chartColors.tertiary,
     }],
   };
 
@@ -209,7 +208,7 @@ function Dashboard() {
     labels: topPurchasedFoods.map(item => item.name),
     datasets: [{
       data: topPurchasedFoods.map(item => item.count),
-      backgroundColor: chartColors.blue,
+      backgroundColor: chartColors.quaternary,
     }],
   };
 
@@ -218,10 +217,13 @@ function Dashboard() {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'right',
+        position: 'bottom',
         labels: {
           boxWidth: 12,
-          padding: 20
+          padding: 10,
+          font: {
+            size: 10
+          }
         }
       }
     }
@@ -238,33 +240,36 @@ function Dashboard() {
     scales: {
       y: {
         beginAtZero: true,
-        grid: {
-          display: true,
-          color: 'rgba(0, 0, 0, 0.1)',
-        },
+        ticks: {
+          font: {
+            size: 10
+          }
+        }
       },
       x: {
-        grid: {
-          display: false,
-        },
+        ticks: {
+          font: {
+            size: 10
+          }
+        }
       },
     },
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <div className="relative">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-0">Dashboard</h1>
+        <div className="relative w-full sm:w-auto">
           <button
             onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-            className="flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="w-full sm:w-auto flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             <FaFilter className="mr-2" />
             {timeFilter === 'all' ? 'All Time' : `Last ${timeFilter}`}
           </button>
           {showFilterDropdown && (
-            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+            <div className="origin-top-right absolute right-0 mt-2 w-full sm:w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
               <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                 {['all', 'hour', 'day', 'week', 'month'].map((filter) => (
                   <button
@@ -287,53 +292,40 @@ function Dashboard() {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-indigo-500"></div>
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
             <AnalyticCard 
-              icon={<FaShoppingCart className="text-blue-500 text-4xl" />} 
+              icon={<FaShoppingCart className="text-indigo-500 text-3xl sm:text-4xl" />} 
               title="Total Orders" 
               value={analytics.totalOrders} 
             />
             <AnalyticCard 
-              icon={<FaMoneyBillWave className="text-green-500 text-4xl" />} 
+              icon={<FaMoneyBillWave className="text-green-500 text-3xl sm:text-4xl" />} 
               title="Total Revenue" 
               value={`₹${analytics.totalRevenue.toFixed(2)}`} 
             />
           </div>
-          <div className="bg-white p-6 rounded-lg shadow mb-8">
-            <h2 className="text-xl font-semibold mb-4">Category Distribution</h2>
-            <div className="h-64">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <ChartCard title="Category Distribution">
               <Pie data={categoryChartData} options={pieChartOptions} />
-            </div>
+            </ChartCard>
+            <ChartCard title="Top 5 Customer Areas">
+              <Bar data={topCustomerAreasChartData} options={barChartOptions} />
+            </ChartCard>
           </div>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Top 5 Customer Areas</h2>
-              <div className="h-64">
-                <Bar data={topCustomerAreasChartData} options={barChartOptions} />
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Peak Order Hours</h2>
-              <div className="h-64">
-                <Bar data={peakOrderHoursChartData} options={barChartOptions} />
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Price Range Distribution</h2>
-              <div className="h-64">
-                <Bar data={priceRangeChartData} options={barChartOptions} />
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Top 5 Most Purchased Foods</h2>
-              <div className="h-64">
-                <Bar data={topPurchasedFoodsChartData} options={barChartOptions} />
-              </div>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ChartCard title="Peak Order Hours">
+              <Bar data={peakOrderHoursChartData} options={barChartOptions} />
+            </ChartCard>
+            <ChartCard title="Price Range Distribution">
+              <Bar data={priceRangeChartData} options={barChartOptions} />
+            </ChartCard>
+            <ChartCard title="Top 5 Most Purchased Foods">
+              <Bar data={topPurchasedFoodsChartData} options={barChartOptions} />
+            </ChartCard>
           </div>
         </>
       )}
@@ -343,14 +335,23 @@ function Dashboard() {
 
 function AnalyticCard({ icon, title, value }) {
   return (
-    <div className="bg-white overflow-hidden shadow-lg rounded-lg p-6">
+    <div className="bg-white overflow-hidden shadow-lg rounded-lg p-6 transition duration-300 ease-in-out hover:shadow-xl">
       <div className="flex items-center">
-        <div className="flex-shrink-0 mr-4 bg-gray-100 rounded-full p-3">{icon}</div>
+        <div className="flex-shrink-0 mr-4 bg-indigo-100 rounded-full p-3">{icon}</div>
         <div>
           <p className="text-sm font-medium text-gray-500 truncate">{title}</p>
-          <p className="mt-1 text-3xl font-semibold text-gray-900">{value}</p>
+          <p className="mt-1 text-2xl font-semibold text-gray-900">{value}</p>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ChartCard({ title, children }) {
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-lg transition duration-300 ease-in-out hover:shadow-xl">
+      <h2 className="text-xl font-semibold mb-4 text-gray-800">{title}</h2>
+      <div className="h-80">{children}</div>
     </div>
   );
 }

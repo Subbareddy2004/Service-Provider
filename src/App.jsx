@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/common/PrivateRoute';
@@ -15,12 +15,15 @@ import Users from './pages/Users';
 function AppContent() {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      {!isLoginPage && <Header />}
+      {!isLoginPage && <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />}
       <div className="flex flex-1">
-        {!isLoginPage && <Sidebar />}
+        {!isLoginPage && (
+          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        )}
         <main className={`flex-1 ${isLoginPage ? '' : 'p-6'}`}>
           <Routes>
             <Route path="/login" element={<Login />} />
